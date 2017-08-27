@@ -9,7 +9,7 @@ class App extends Component {
     return (
       <div className="App">
         <Route exact path="/" component={MainView} />
-        <Route path="/:id" component={MainView} />
+        <Route path="/:category" component={MainView} />
       </div>
     );
   }
