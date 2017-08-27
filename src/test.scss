@@ -1,0 +1,9 @@
+$primary-color: 'teal';
+@import 'loaders.css/src/animations/ball-scale-multiple.scss';
+
+.loader-hidden {
+  display: none;
+}
+.loader-active {
+  display: block;
+}
