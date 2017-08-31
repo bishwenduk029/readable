@@ -11,7 +11,7 @@ class MainView extends Component {
   componentDidMount() {
     this.props.fetchCategories();
   }
-
+  
   render() {
 
     return (
