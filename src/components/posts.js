@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { fetchPosts } from '../actions/postsAction';
 import { Loader } from 'react-loaders'
 
@@ -10,24 +11,12 @@ import PostHeader from './postHeader.js';
 
 class Posts extends Component {
 
-  state = {
-    sortType: 'voteScore',
-    posts: []
-  }
-
   componentDidMount() {
     this.props.fetchPosts();
   }
 
-  componentWillReceiveProps(nextProps){
-
-    console.log("POsts is re-rendering");
-    this.setState({
-      posts: nextProps.allPosts
-    });
-  }
-
   render() {
+    const sortOn = this.props.sortType;
     if (this.props.isFecthingPosts) {
       return (
         <div>
@@ -39,22 +28,25 @@ class Posts extends Component {
       <div className="container">
         <PostHeader category={this.props.showPostType} />
         <div className="collection">
-          {this.state.posts
+          {this.props.allPosts
             .filter(elem => {
               if (this.props.showPostType === 'all')
                 return elem;
               return (elem.category === this.props.showPostType);
             })
- //           .sort(sortBy(-this.state.sortType))
-            .map(item => (
-              <li key={item.id} to="/" className="collection-item postItem">
-                <p>
-                  Post Title: {item.title} <br />
-                  Post By: {item.author} <br />
-                  Rated: {item.voteScore} <br />
-                </p>
+            .sort((elem1, elem2) => elem2[sortOn] - elem1[sortOn])
+            .map((item, index) => (
+              <div className="collection-item postItem" key={item.id}>
+                <Link to={`/${item.category}/${item.id}`}>
+                  <p>
+                    Post Title: {item.title} <br />
+                    Post By: {item.author} <br />
+                    Rated: {item.voteScore} <br />
+                    TimeStamp: {item.timestamp} <br />
+                  </p>
+                </Link>
                 <PostControls post={item} />
-              </li>
+              </div>
             ))}
         </div>
       </div>
@@ -65,7 +57,8 @@ class Posts extends Component {
 const mapStatetoProps = (state, ownProps) => ({
   isFecthingPosts: state.posts.isFetching,
   allPosts: state.posts.items,
-  showPostType: ownProps.showPostType
+  showPostType: ownProps.showPostType,
+  sortType:  state.posts.sortType
 });
 
 const mapDispatchToProps = (dispatch) => ({

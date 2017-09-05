@@ -51,3 +51,16 @@
   list-style: none;
 }
 
+.postItem {
+  border: 2px solid black;
+  margin-top: 20px;
+  border-radius: 2px;
+}
+
+.editPost {
+  width: 100%;
+}
+
+.add{
+  box-shadow: none;
+}

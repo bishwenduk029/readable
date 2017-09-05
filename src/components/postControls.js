@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import ThumbsUp from 'react-icons/lib/md/thumb-up';
 import ThumbsDown from 'react-icons/lib/md/thumb-down';
 import Edit from 'react-icons/lib/md/edit';
@@ -19,9 +20,9 @@ class PostControls extends Component {
             onClick={() => (this.props.changeVote(this.props.post, 'downVote'))}>
             <ThumbsDown />
           </a>
-          <a className="waves-effect waves-light btn edits">
+          <Link to={`/edit/${this.props.post.id}`} className="waves-effect waves-light btn edits">
             <Edit />
-          </a>
+          </Link>
           <a className="waves-effect waves-light btn edits">
             <Delete />
           </a>
