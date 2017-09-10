@@ -29,7 +29,7 @@ class MainView extends Component {
             </nav>
           </div>
           <Posts showPostType={this.props.match.params.category ? this.props.match.params.category : 'all'} />
-          <Link className="newPost btn-floating btn-large waves-effect waves-light teal" to='/addPost'><Add /></Link>
+          <Link className="newPost btn-floating btn-large waves-effect waves-light teal" to='/addPost'><Add size={30} /></Link>
         </div>
     );
   }

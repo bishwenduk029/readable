@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { fetchPosts } from '../actions/postsAction';
 import { Loader } from 'react-loaders'
-
-import PostControls from './postControls';
-//import sortBy from 'sort-by';
+import EachPost from './eachPost';
 
 import PostHeader from './postHeader.js';
 
@@ -26,7 +23,7 @@ class Posts extends Component {
     } 
     return (
       <div className="container">
-        <PostHeader category={this.props.showPostType} />
+        <PostHeader category={this.props.showPostType} sortType={sortOn} />
         <div className="collection">
           {this.props.allPosts
             .filter(elem => {
@@ -34,19 +31,13 @@ class Posts extends Component {
                 return elem;
               return (elem.category === this.props.showPostType);
             })
-            .sort((elem1, elem2) => elem2[sortOn] - elem1[sortOn])
-            .map((item, index) => (
-              <div className="collection-item postItem" key={item.id}>
-                <Link to={`/${item.category}/${item.id}`}>
-                  <p>
-                    Post Title: {item.title} <br />
-                    Post By: {item.author} <br />
-                    Rated: {item.voteScore} <br />
-                    TimeStamp: {item.timestamp} <br />
-                  </p>
-                </Link>
-                <PostControls post={item} />
-              </div>
+            .sort((elem1, elem2) => (elem2[sortOn] > elem1[sortOn]))
+            .map(item => (
+              <EachPost 
+                key={item.id}
+                post={item}  
+                comments={item.comments ? item.comments : null} 
+              />
             ))}
         </div>
       </div>

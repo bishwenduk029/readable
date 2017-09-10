@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import { editPost } from '../actions/postsAction.js';
+import { updateComment } from '../actions/postsAction.js';
 
 const labelStyle = {
   color: 'teal'
@@ -18,40 +18,25 @@ const submitStyle = {
 class EditPost extends Component {
 
   state = {
-    post: {
-      title: '',
-      body: '',
-      author: ''
-    }
+    body: ''
   };
 
   componentDidMount(){
-    if (this.props.match.params) {
-      const currentPost = this.props.posts.filter(post => (this.props.match.params.postID === post.id))[0];
-      this.setState({
-        post: currentPost
-      });
-    }
-  }
-
-  handleTitleChange = (event) => {
     this.setState({
-      post: Object.assign({}, this.state.post, {
-        title: event.target.value
-      })
+      body: this.props.commentToEdit.body
     });
   }
 
   handleBodyChange = (event) => {
     this.setState({
-      post: Object.assign({}, this.state.post, {
-        body: event.target.value
-      })
+      body: event.target.value
     });
   }
 
   handleSubmit = () => {
-    this.props.addNewPost(this.state.post);
+    this.props.editComments(Object.assign({}, this.props.commentToEdit,{
+      body: this.state.body
+    }));
   }
 
   render() {
@@ -67,23 +52,15 @@ class EditPost extends Component {
         </div>
         <div className="container edit">
           <TextField
-            hintText="Post Tittle"
-            floatingLabelText="Enter Title of the Post"
-            floatingLabelStyle={labelStyle}
-            fullWidth={true}
-            value={this.state.post.title}
-            onChange={this.handleTitleChange}
-          /><br />
-          <TextField
-            hintText="Post Body"
+            hintText="Comment Body"
             floatingLabelText="Enter text below"
             floatingLabelStyle={labelStyle}
             fullWidth={true}
             multiLine={true}
-            value={this.state.post.body}
+            value={this.state.body}
             onChange={this.handleBodyChange}
           /><br />
-          <RaisedButton label="Edit the Post" 
+          <RaisedButton label="Edit the comment" 
             fullWidth={true} 
             backgroundColor="teal" 
             labelStyle={submitStyle}
@@ -95,12 +72,12 @@ class EditPost extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  posts: state.posts.items
+const mapDispatchToProps = (dispatch) => ({
+  editComments: newComment => (dispatch(updateComment(newComment)))
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  addNewPost: (newPost) => dispatch(editPost(newPost))
+const mapStateToProps = (state) => ({
+  commentToEdit: state.posts.commentToEdit
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditPost);

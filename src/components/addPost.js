@@ -14,6 +14,11 @@ const labelStyle = {
   color: 'teal'
 };
 
+const submitStyle = {
+  color: 'white',
+  fontFamily: 'laila'
+};
+
 class AddPost extends Component {
 
   state = {
@@ -122,9 +127,10 @@ class AddPost extends Component {
               ))}
             </SelectField>
             <br />
-            <RaisedButton label="Edit the Post"
+            <RaisedButton label="ADD NEW POST"
               fullWidth={true} 
               backgroundColor="teal" 
+              labelStyle={submitStyle}
               onClick={this.handleSubmit}
             />
           </div>

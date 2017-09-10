@@ -15,6 +15,10 @@
   font-size: large;
 }
 
+body{
+  font-family: 'Laila';
+}
+
 .encase div{
   margin-top: 50%;
 }
@@ -29,13 +33,26 @@
   right: 5%;
 }
 
+h4 {
+  display: inline-block;
+}
+
 .postItem {
   font-size: 120%;
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
 .postItem p {
-  color: black;
+  color: black; 
+}
+
+.col-1 {
+  width: 25%;
+  float: left;
+}
+
+.submit {
+  color: white;
 }
 
 .edits {
@@ -63,4 +80,13 @@
 
 .add{
   box-shadow: none;
+}
+
+.comment-header {
+  display: inline-block;
+  width: 50%;
+}
+
+.comment-button {
+  margin-left: 5%;
 }

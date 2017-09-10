@@ -11,7 +11,21 @@ class PostHeader extends Component {
   state = {
     sortBy: 'voteScore'
   };
-
+  
+  componentDidMount() {
+    this.setState({
+      sortBy: this.props.sortType
+    });
+  }  
+  
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.sortType !== this.props.sortType){
+      this.setState({
+        sortBy: nextProps.sortType
+      });
+    }
+  }
+  
   handleChange = (event, index, value) => {
     this.setState({
       sortBy: value
@@ -35,6 +49,10 @@ class PostHeader extends Component {
     )
   }
 }
+
+const mapStateToProps = (state, ownProps) => ({
+  sortType: ownProps.sortType
+});
 
 const mapDispatchToProps = (dispatch) => ({
   updateSortBy: (value) => dispatch(updateSortByParam(value))
