@@ -1,7 +1,7 @@
 import {
   REQUEST_CATEGORY,
   RECEIVE_CATEGORY
-} from '../actions/categoryActions';
+} from '../actions/types';
 
 function categories(
   state = {

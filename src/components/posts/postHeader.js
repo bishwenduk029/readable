@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 
-import { updateSortByParam } from '../actions/postsAction';
+import { updateSortByParam } from '../../actions/postsAction';
 
 class PostHeader extends Component {
 
@@ -58,4 +58,4 @@ const mapDispatchToProps = (dispatch) => ({
   updateSortBy: (value) => dispatch(updateSortByParam(value))
 });
 
-export default connect(null, mapDispatchToProps)(PostHeader);
+export default connect(mapStateToProps, mapDispatchToProps)(PostHeader);

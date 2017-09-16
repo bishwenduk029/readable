@@ -1,14 +1,31 @@
 import fetch from 'isomorphic-fetch';
 import Axios from 'axios';
 
-export const REQUEST_POSTS = 'REQUEST_POSTS'
+import {
+  REQUEST_POSTS,
+  RECEIVE_POSTS,
+  ADD_NEW_POST,
+  ADDING_POST,
+  EDITING_POST,
+  UPDATED_POST,
+  UPDATE_POST_VOTE,
+  UPDATE_SORT_BY,
+  ADD_COMMENTS_TO_POST,
+  EDITING_COMMENT,
+  EDIT_COMMENT_SUCCESS,
+  ADDING_COMMENT,
+  ADDED_NEW_COMMENT,
+  UPDATED_COMMENT_VOTE,
+  POST_DELETED,
+  COMMENT_DELETED
+} from './types';
+
 function requestPosts() {
   return {
     type: REQUEST_POSTS
   }
 }
 
-export const RECEIVE_POSTS = 'RECEIVE_POSTS'
 function receivePosts(json) {
   return {
     type: RECEIVE_POSTS,
@@ -16,7 +33,6 @@ function receivePosts(json) {
   }
 }
 
-export const UPDATE_POST_VOTE = 'UPDATE_POST_VOTE';
 function receiveUpdatedPostVote(newPost, oldPost) {
   return {
     type: UPDATE_POST_VOTE,
@@ -26,7 +42,6 @@ function receiveUpdatedPostVote(newPost, oldPost) {
   }
 }
 
-export const UPDATED_COMMENT_VOTE = 'UPDATED_COMMENT_VOTE';
 function receiveUpdatedCommentVote(newComment, oldComment) {
   return {
     type: UPDATED_COMMENT_VOTE,
@@ -34,7 +49,6 @@ function receiveUpdatedCommentVote(newComment, oldComment) {
   }
 }
 
-export const UPDATE_SORT_BY = 'UPDATE_SORT_BY';
 export function updateSortByParam(value) {
   return {
     type: UPDATE_SORT_BY,
@@ -42,21 +56,18 @@ export function updateSortByParam(value) {
   }
 }
 
-export const ADDING_POST = 'ADDING_POST';
 export function requestPostAddition() {
   return {
     type: ADDING_POST
   }
 }
 
-export const ADDING_COMMENT = 'ADDING_COMMENT';
 export function requestCommentAddition() {
   return {
     type: ADDING_COMMENT
   }
 }
 
-export const ADD_NEW_POST  = 'ADD_NEW_POST';
 export function newPostAdded(post) {
   return {
     type: ADD_NEW_POST,
@@ -64,14 +75,19 @@ export function newPostAdded(post) {
   }
 }
 
-export const ADDED_NEW_COMMENT  = 'ADDED_NEW_COMMENT';
 export function newCommentAdded(comment) {
   return {
     type: ADDED_NEW_COMMENT,  
+    comment
   };
 }
 
-export const UPDATED_POST = 'UPDATED_POST';
+function editingPost() {
+  return ({
+    type: EDITING_POST
+  });
+}
+
 export function receiveUpdatedPost(post) {
   return {
     type: UPDATED_POST,
@@ -79,7 +95,6 @@ export function receiveUpdatedPost(post) {
   }
 }
 
-export const ADD_COMMENTS_TO_POST = 'ADD_COMMENTS_TO_POST';
 function modifyPostWithComments(comments, post) {
   post.comments = comments;
   return {
@@ -88,15 +103,6 @@ function modifyPostWithComments(comments, post) {
   }
 }
 
-export const REQUEST_COMMENT_UPDATE = 'REQUEST_COMMENT_UPDATE';
-export function requestCommentUpdate(comment) {
-  return {
-    type: REQUEST_COMMENT_UPDATE,
-    commentToEdit: comment
-  }
-}
-
-export const POST_DELETED = 'POST_DELETED';
 export function postDeleted(deletedPost) {
   return {
     type: POST_DELETED,
@@ -104,11 +110,22 @@ export function postDeleted(deletedPost) {
   }
 }
 
-export const COMMENT_DELETED = 'COMMENT_DELETED';
 export function commentDeleted(deletedComment) {
   return {
     type: COMMENT_DELETED,
     deletedComment
+  }
+}
+
+function editingComment() {
+  return {
+    type: EDITING_COMMENT
+  }
+}
+
+function updatedComment() {
+  return {
+    type: EDIT_COMMENT_SUCCESS
   }
 }
 
@@ -154,6 +171,7 @@ export function updateCommentVote(comment, vote) {
 
 export function editPost(post) {
   return function(dispatch) {
+    dispatch(editingPost());
     const url = 'http://localhost:5001/posts/' + post.id.toString();
     return Axios.put(url,{title: post.title, body: post.body}, {headers: { 'Authorization': 'bashu' }})
       .then(
@@ -165,9 +183,14 @@ export function editPost(post) {
 }
 
 export function  updateComment(newComment) {
+
   return function(dispatch) {
+    dispatch(editingComment());
     const url = 'http://localhost:5001/comments/' + newComment.id.toString();
-    return Axios.put(url,{timestamp: Date.now(), body: newComment.body}, {headers: { 'Authorization': 'bashu' }});
+    return Axios.put(url,{timestamp: Date.now(), body: newComment.body}, {headers: { 'Authorization': 'bashu' }})
+      .then(resp => resp.data)
+      .catch(error => {throw(error);})
+      .then(json => dispatch(updatedComment()))
   }
 }
 

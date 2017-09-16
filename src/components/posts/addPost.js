@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { connect } from 'react-redux'; 
+import { Redirect } from 'react-router-dom';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import uniqid from 'uniqid';
@@ -8,16 +8,8 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 
-import { addNewPost } from '../actions/postsAction.js';
-
-const labelStyle = {
-  color: 'teal'
-};
-
-const submitStyle = {
-  color: 'white',
-  fontFamily: 'laila'
-};
+import { addNewPost } from '../../actions/postsAction.js';
+import {labelStyle, submitStyle} from '../../component.styles';
 
 class AddPost extends Component {
 
@@ -27,8 +19,17 @@ class AddPost extends Component {
       body: '',
       author: '',
       category: ''
-    }
+    },
+    postAdded: false
   };
+
+  componentWillReceiveProps = (nextProps) => {
+    if (this.props.isAdding && !nextProps.isAdding)
+      this.setState({
+        postAdded: true
+      });
+  }
+  
 
   handleTitleChange = (event) => {
     this.setState({
@@ -71,16 +72,12 @@ class AddPost extends Component {
   }
 
   render() {
+
+    if (this.state.postAdded)
+      return <Redirect to="/" />; 
     
     return (
       <div>
-        <div className='row teal'>
-          <nav>
-            <div className="nav-wrapper  teal lighten-2">
-              <Link to="/" className="brand-logo center">Readables</Link>
-            </div>
-          </nav>
-        </div>
         {this.props.isAdding ?
           <CircularProgress size={80} thickness={5} />
           :
@@ -129,7 +126,7 @@ class AddPost extends Component {
             <br />
             <RaisedButton label="ADD NEW POST"
               fullWidth={true} 
-              backgroundColor="teal" 
+              backgroundColor="#00bcd4" 
               labelStyle={submitStyle}
               onClick={this.handleSubmit}
             />

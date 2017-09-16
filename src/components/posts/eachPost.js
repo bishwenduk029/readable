@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { getCommentsForPost } from '../actions/postsAction';
+import { getCommentsForPost } from '../../actions/postsAction';
 
 import PostControls from './postControls';
 
@@ -14,7 +14,7 @@ class EachPost extends Component {
   render() {
     return (
       <div className="collection-item postItem">
-        <Link to={`/${this.props.post.category}/${this.props.post.id}`}>
+        <Link to={`/post/${this.props.post.category}/${this.props.post.id}`}>
           <p>
             <span className='col-1'>Post Title</span>
             <span>:{this.props.post.title}</span><br />

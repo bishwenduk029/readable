@@ -5,25 +5,25 @@ import ThumbsUp from 'react-icons/lib/md/thumb-up';
 import ThumbsDown from 'react-icons/lib/md/thumb-down';
 import Edit from 'react-icons/lib/md/edit';
 import Delete from 'react-icons/lib/md/delete';
-import { updatePostVote, deletePost } from '../actions/postsAction';
+import { updatePostVote, deletePost } from '../../actions/postsAction';
 
 class PostControls extends Component {
   render() {
     return (
       <div>
         <span>
-          <a className="waves-effect waves-light btn edits" 
+          <a className="waves-effect waves-light btn edits blue" 
             onClick={() => (this.props.changeVote(this.props.post, 'upVote'))}>
             <ThumbsUp size={20} />
           </a>
-          <a className="waves-effect waves-light btn edits" 
+          <a className="waves-effect waves-light btn edits blue" 
             onClick={() => (this.props.changeVote(this.props.post, 'downVote'))}>
             <ThumbsDown size={20} />
           </a>
-          <Link to={`/edit/${this.props.post.id}`} className="waves-effect waves-light btn edits">
+          <Link to={`/edit/${this.props.post.id}`} className="waves-effect waves-light btn edits blue">
             <Edit size={20} />
           </Link>
-          <a className="waves-effect waves-light btn edits" onClick={() => (this.props.deletePost(this.props.post))}>
+          <a className="waves-effect waves-light btn edits blue" onClick={() => (this.props.deletePost(this.props.post))}>
             <Delete size={20} />
           </a>
         </span>

@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import { editPost } from '../actions/postsAction.js';
+import { editPost } from '../../actions/postsAction.js';
 
 const labelStyle = {
-  color: 'teal'
+  color: '#00bcd4'
 };
 
 const submitStyle = {
@@ -22,7 +22,8 @@ class EditPost extends Component {
       title: '',
       body: '',
       author: ''
-    }
+    },
+    postEditSucess: false
   };
 
   componentDidMount(){
@@ -33,6 +34,14 @@ class EditPost extends Component {
       });
     }
   }
+
+  componentWillReceiveProps = (nextProps) => {
+    if (this.props.isEditing && !nextProps.isEditing)
+      this.setState({
+        postEditSucess: true
+      });
+  }
+  
 
   handleTitleChange = (event) => {
     this.setState({
@@ -56,15 +65,11 @@ class EditPost extends Component {
 
   render() {
     
+    if (this.state.postEditSucess)
+      return <Redirect to={`/post/${this.state.post.category}/${this.state.post.id}`} />
+
     return (
       <div>
-        <div className='row teal'>
-          <nav>
-            <div className="nav-wrapper  teal lighten-2">
-              <Link to="/" className="brand-logo center">Readables</Link>
-            </div>
-          </nav>
-        </div>
         <div className="container edit">
           <TextField
             hintText="Post Tittle"
@@ -85,7 +90,7 @@ class EditPost extends Component {
           /><br />
           <RaisedButton label="Edit the Post" 
             fullWidth={true} 
-            backgroundColor="teal" 
+            backgroundColor='#00bcd4'
             labelStyle={submitStyle}
             onClick={this.handleSubmit}
           />
@@ -96,7 +101,8 @@ class EditPost extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  posts: state.posts.items
+  posts: state.posts.items,
+  isEditing: state.posts.isEditing
 });
 
 const mapDispatchToProps = (dispatch) => ({

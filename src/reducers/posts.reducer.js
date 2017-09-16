@@ -7,13 +7,15 @@ import {
   UPDATE_POST_VOTE,
   UPDATE_SORT_BY,
   ADD_COMMENTS_TO_POST,
-  REQUEST_COMMENT_UPDATE,
+  EDITING_COMMENT,
   ADDING_COMMENT,
   ADDED_NEW_COMMENT,
+  EDIT_COMMENT_SUCCESS,
   UPDATED_COMMENT_VOTE,
   POST_DELETED,
-  COMMENT_DELETED
-} from '../actions/postsAction';
+  COMMENT_DELETED,
+  EDITING_POST
+} from '../actions/types';
 
 function posts(
   state = {
@@ -21,7 +23,7 @@ function posts(
     isAdding: false,
     items: [],
     sortType: 'voteScore',
-    commentToEdit: ''
+    isEditing: false
   },
   action
 ) {
@@ -34,7 +36,7 @@ function posts(
     case RECEIVE_POSTS:
       return Object.assign({}, state, {
         isFetching: false,
-        items: action.posts
+        items: action.posts.filter(item => (!item.deleted))
       })
     case ADDING_POST:
       return Object.assign({}, state, {
@@ -45,10 +47,18 @@ function posts(
         items: [...state.items, action.newPost],
         isAdding: false
       });
-    case (UPDATE_POST_VOTE || UPDATED_POST):
+    case EDITING_POST:
+      return Object.assign({}, state,{
+        isEditing: true
+      });
+    case (UPDATE_POST_VOTE):
       tempList = state.items.filter(elem => (elem.id !== action.updatedPost.id));
       return Object.assign({}, state, {
         items: [...tempList, action.updatedPost]
+      });
+    case (UPDATED_POST):
+      return Object.assign({}, state, {
+        isEditing: false
       });
     case ADD_COMMENTS_TO_POST:
       tempList = state.items.filter(elem => (elem.id !== action.post.id));
@@ -59,9 +69,13 @@ function posts(
       return Object.assign({}, state,{
         sortType: action.sortType
       });
-    case REQUEST_COMMENT_UPDATE:
+    case EDITING_COMMENT:
       return Object.assign({}, state, {
-        commentToEdit: action.commentToEdit
+        isEditing: true
+      });
+    case EDIT_COMMENT_SUCCESS:
+      return Object.assign({}, state, {
+        isEditing: false
       });
     case ADDING_COMMENT:
       return Object.assign({}, state, {
@@ -69,7 +83,13 @@ function posts(
       });
     case ADDED_NEW_COMMENT:
       return Object.assign({}, state ,{
-        isAdding: false
+        isAdding: false,
+        items: state.items.map(item => {
+          if (item.id === action.comment.parentId) {
+            item.comments = item.comments ? [...item.comments, action.comment] : [].push(action.comment);
+          }
+          return item;
+        })
       });
     case UPDATED_COMMENT_VOTE:
       return Object.assign({}, state, {

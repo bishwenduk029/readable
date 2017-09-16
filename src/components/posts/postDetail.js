@@ -1,45 +1,45 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import PostControls from './postControls';
-import CommentControls from './commentControls';
-import { getCommentsForPost } from '../actions/postsAction';
+import CommentControls from '../comments/commentControls';
+import { fetchPosts, getCommentsForPost } from '../../actions/postsAction';
 
 
 class PostDetail extends Component {
 
   state = {
-    currentPost: null
+    currentPost: null,
+    postFound: true
   }
 
   componentDidMount() {
-    const currentPost = this.props.posts.filter(post => (this.props.match.params.postID === post.id))[0];
-    this.setState({
-      currentPost
-    });
-    this.props.getComments(currentPost);
+    this.props.fetchPosts();
   }
-
   
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      currentPost: nextProps.posts.filter(post => (this.props.match.params.postID === post.id))[0]
-    });
+    const currentPost = nextProps.posts.filter(post => (this.props.match.params.postID === post.id))[0];
+    this.setState({ currentPost });
+    if (this.props.isFetching && !nextProps.isFetching && !currentPost)
+      this.setState({postFound: false});
+  }  
+  
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.currentPost) {
+      if (!this.state.currentPost.comments) {
+        this.props.getComments(this.state.currentPost);
+      }
+    }
   }
-    
+  
 
   render() {
+    if (!this.state.postFound)
+      return <Redirect to="/pageNotFound" />;
     return (
       <div>
-        <div className='row teal'>
-          <nav>
-            <div className="nav-wrapper  teal lighten-2">
-              <Link to="/" className="brand-logo center">Readables</Link>
-            </div>
-          </nav>
-        </div>
-        {this.state.currentPost && 
+        {this.state.currentPost &&
           <div className="container">
             <Card>
               <CardHeader
@@ -62,14 +62,14 @@ class PostDetail extends Component {
               <h4>All Comments</h4>
               <span>
                 <Link 
-                  className="btn comment-button waves-effect waves-light teal" 
+                  className="btn comment-button waves-effect waves-light blue" 
                   to={`/addComment/${this.state.currentPost.id}`}>
                   ADD NEW COMMENT
                 </Link>
               </span>
             </span>
             <div className='collection'>
-              {this.state.currentPost.comments
+              {this.state.currentPost.comments && this.state.currentPost.comments
                 .sort((e1, e2) => (e2.timestamp > e1.timestamp))
                 .map(
                   item => (
@@ -96,10 +96,12 @@ class PostDetail extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  posts: state.posts.items
+  posts: state.posts.items,
+  isFetching: state.posts.isFetching
 });
 
 const mapDispatchToProps = (dispatch) => ({
+  fetchPosts: () => dispatch(fetchPosts()),
   getComments : (post) => (dispatch(getCommentsForPost(post)))
 });
 

@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchPosts } from '../actions/postsAction';
+import { fetchPosts } from '../../actions/postsAction';
 import { Loader } from 'react-loaders'
 import EachPost from './eachPost';
-
 import PostHeader from './postHeader.js';
 
 class Posts extends Component {
@@ -20,7 +19,7 @@ class Posts extends Component {
           <Loader type="ball-scale-multiple" />
         </div>
       );
-    } 
+    }
     return (
       <div className="container">
         <PostHeader category={this.props.showPostType} sortType={sortOn} />
